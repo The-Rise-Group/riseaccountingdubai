@@ -1818,12 +1818,12 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
       <form class="m-step" data-s="2" id="mForm" novalidate>
         <h4>Where should we reach you?</h4>
         <div class="fields">
-          <div class="f full"><label for="fName">Name</label><input id="fName" name="name" autocomplete="name" required><small>Please add your name</small></div>
+          <div class="f full"><label for="fName">Full name</label><input id="fName" name="name" autocomplete="name" placeholder="e.g. Ahmed Al Rashidi" required><small>Please add your first and last name</small></div>
           <div class="f full"><label for="fCo">Company name</label><input id="fCo" name="company" autocomplete="organization" required><small>Please add your company</small></div>
           <div class="f full"><label for="fEmail">Email</label><input id="fEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@company.co.uk" required><small>Please add a valid email</small></div>
           <div class="f full"><label for="fPhone">Phone number</label>
             <div class="phone"><select id="fCc" name="country_code" aria-label="Country code"><option value="+971" selected>UAE +971</option><option value="+44">UK +44</option><option value="+1">US +1</option><option value="+353">IE +353</option><option value="">Other</option></select>
-            <input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567" required></div><small>Please add a phone number</small></div>
+            <input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567" maxlength="15" required></div><small>Please add a valid phone number</small></div>
         </div>
         <div class="m-actions"><button type="button" class="btn btn-soft" id="mBack">Back</button><button type="submit" class="btn btn-primary">Talk to an expert</button></div>
         <p class="fine">We only use your details to reply to you. An accountant gets back to you within 24 hours.</p>
@@ -2106,12 +2106,37 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
     goStep(2);
   });
   $('#mBack').addEventListener('click', () => goStep(1));
+  const COUNTRY_RULES = {
+    '+971': { digits: 9,  placeholder: '50 123 4567' },
+    '+44':  { digits: 10, placeholder: '7700 900123' },
+    '+1':   { digits: 10, placeholder: '555 123 4567' },
+    '+353': { digits: 9,  placeholder: '85 123 4567' },
+    '':     { digits: 15, placeholder: '' }
+  };
+  function getPhoneRule() { return COUNTRY_RULES[$('#fCc').value] || COUNTRY_RULES['']; }
   const rules = {
-    fName: v => v.trim().length > 1,
+    fName: v => /^\S+\s+\S+/.test(v.trim()),
     fCo: v => v.trim().length > 1,
     fEmail: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
-    fPhone: v => v.replace(/\D/g, '').length >= 7
+    fPhone: v => {
+      const digits = v.replace(/\D/g, '');
+      const rule = getPhoneRule();
+      if (rule.digits === 15) return digits.length >= 7 && digits.length <= 15;
+      return digits.length === rule.digits;
+    }
   };
+  $('#fPhone').addEventListener('input', e => {
+    const rule = getPhoneRule();
+    let digits = e.target.value.replace(/\D/g, '');
+    if (digits.length > rule.digits) digits = digits.slice(0, rule.digits);
+    if (digits !== e.target.value) e.target.value = digits;
+  });
+  $('#fCc').addEventListener('change', () => {
+    const rule = getPhoneRule();
+    $('#fPhone').placeholder = rule.placeholder;
+    const currentDigits = $('#fPhone').value.replace(/\D/g, '');
+    if (currentDigits.length > rule.digits) $('#fPhone').value = currentDigits.slice(0, rule.digits);
+  });
   Object.keys(rules).forEach(id => $('#' + id).addEventListener('input', e => {
     if (rules[id](e.target.value)) e.target.closest('.f').classList.remove('err');
   }));
