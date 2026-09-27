@@ -2030,13 +2030,23 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
   });
   $('#mBack').addEventListener('click', () => goStep(1));
   const COUNTRY_RULES = {
-    '+971': { digits: 9,  placeholder: '50 123 4567' },
-    '+44':  { digits: 10, placeholder: '7700 900123' },
-    '+1':   { digits: 10, placeholder: '555 123 4567' },
-    '+353': { digits: 9,  placeholder: '85 123 4567' },
-    '':     { digits: 15, placeholder: '' }
+    '+971': { digits: 9,  placeholder: '50 123 4567',  format: [2, 3, 4] },
+    '+44':  { digits: 10, placeholder: '7700 900123',  format: [4, 6] },
+    '+1':   { digits: 10, placeholder: '555 123 4567', format: [3, 3, 4] },
+    '+353': { digits: 9,  placeholder: '85 123 4567',  format: [2, 3, 4] },
+    '':     { digits: 15, placeholder: '',             format: [] }
   };
   function getPhoneRule() { return COUNTRY_RULES[$('#fCc').value] || COUNTRY_RULES['']; }
+  function formatPhone(digits, format) {
+    if (!format.length) return digits;
+    var parts = [], idx = 0;
+    for (var i = 0; i < format.length; i++) {
+      if (idx >= digits.length) break;
+      parts.push(digits.slice(idx, idx + format[i]));
+      idx += format[i];
+    }
+    return parts.join(' ');
+  }
   const rules = {
     fName: v => /^\S+\s+\S+/.test(v.trim()),
     fCo: v => v.trim().length > 1,
@@ -2052,13 +2062,15 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
     const rule = getPhoneRule();
     let digits = e.target.value.replace(/\D/g, '');
     if (digits.length > rule.digits) digits = digits.slice(0, rule.digits);
-    if (digits !== e.target.value) e.target.value = digits;
+    const formatted = formatPhone(digits, rule.format);
+    if (formatted !== e.target.value) e.target.value = formatted;
   });
   $('#fCc').addEventListener('change', () => {
     const rule = getPhoneRule();
     $('#fPhone').placeholder = rule.placeholder;
-    const currentDigits = $('#fPhone').value.replace(/\D/g, '');
-    if (currentDigits.length > rule.digits) $('#fPhone').value = currentDigits.slice(0, rule.digits);
+    let currentDigits = $('#fPhone').value.replace(/\D/g, '');
+    if (currentDigits.length > rule.digits) currentDigits = currentDigits.slice(0, rule.digits);
+    $('#fPhone').value = formatPhone(currentDigits, rule.format);
   });
   Object.keys(rules).forEach(id => $('#' + id).addEventListener('input', e => {
     if (rules[id](e.target.value)) e.target.closest('.f').classList.remove('err');
