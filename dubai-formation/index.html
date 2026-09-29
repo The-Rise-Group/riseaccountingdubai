@@ -7,6 +7,8 @@
 <meta name="description" content="Mainland or Freezone company formation in the UAE, handled by chartered accountants. Structure recommendation, trade licence, Emirates ID sponsorship and bank account intro. Book a free consultation.">
 <link rel="preload" as="image" href="../assets/hero-dubai-4k.jpg" fetchpriority="high">
 <link rel="icon" href="../assets/logo-f25648fb.svg">
+<!-- HubSpot tracking: sets hubspotutk cookie and records page view with UTMs so form submissions land with Original Source Drill-Down 1 and 2 populated. -->
+<script id="hs-script-loader" async defer src="//js.hs-scripts.com/9031287.js"></script>
 <!--
   HOW TO EDIT THIS PAGE
   1. Words in lists (services, why Rise, reviews, steps, FAQs, chatbot): edit the CONFIG script just below.
@@ -2139,6 +2141,7 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
     var servicesArr = Array.isArray(data.services) ? data.services : (data.services ? [data.services] : []);
     var servicesEnum  = servicesArr.map(function(s){ return SERVICE_VALUE_MAP[s] || s; }).join(';');
     var servicesLabel = servicesArr.join(', ');
+    var hutk = (document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]+)/) || [])[1];
     var body = {
       fields: [
         { objectTypeId: '0-1', name: 'firstname', value: firstname },
@@ -2149,6 +2152,7 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
         { objectTypeId: '0-1', name: 'what_services_are_you_most_interested_in_dubai', value: servicesEnum }
       ]
     };
+    if (hutk) body.context = { hutk: hutk };
     var urlParams = new URLSearchParams(window.location.search);
     var redirectParams = new URLSearchParams();
     redirectParams.set('firstname', firstname);
