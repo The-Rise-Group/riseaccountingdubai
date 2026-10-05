@@ -1768,7 +1768,7 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
         <div class="opts opts-check" id="spendOpts"></div>
         <div class="m-actions"><button type="button" class="btn btn-primary" id="mNext" disabled>Next</button></div>
       </div>
-      <form class="m-step" data-s="2" id="mForm" novalidate>
+      <form class="m-step" data-s="2" id="mForm" novalidate data-hs-do-not-collect="true">
         <h4>Where should the accountant reach you?</h4>
         <div class="fields">
           <div class="f full"><label for="fName">Full name</label><input id="fName" name="name" autocomplete="name" placeholder="e.g. Ahmed Al Rashidi" required><small>Please add your first and last name</small></div>
@@ -1805,7 +1805,7 @@ a.rbc-l:hover{transform:translateY(-2px) scale(1.08);z-index:2}
   </div>
   <div class="bot-body" id="botBody" aria-live="polite"></div>
   <div class="bot-chips" id="botChips"></div>
-  <form class="bot-in" id="botForm"><input id="botInput" placeholder="Type your question" autocomplete="off" aria-label="Your question"><button aria-label="Send"><svg class="ic"><use href="#i-send"/></svg></button></form>
+  <form class="bot-in" id="botForm" data-hs-do-not-collect="true"><input id="botInput" placeholder="Type your question" autocomplete="off" aria-label="Your question"><button aria-label="Send"><svg class="ic"><use href="#i-send"/></svg></button></form>
 </div>
 <button class="totop" id="toTop" aria-label="Back to top"><svg class="ic"><use href="#i-arrow-up"/></svg></button>
 
